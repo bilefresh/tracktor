@@ -14,7 +14,8 @@ export default defineConfig(({ mode }) => {
 			host: env.CLIENT_HOST || '0.0.0.0',
 			proxy: {
 				'/api': `http://localhost:3112`,
-			}
+			},
+			allowedHosts: ['localhost', '127.0.0.1', '0.0.0.0', 'olusesilogistics.com'],
 		},
 		envDir: resolve(process.cwd(), '../../'),
 		optimizeDeps: {
