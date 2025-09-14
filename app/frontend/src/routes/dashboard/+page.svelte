@@ -18,6 +18,7 @@
 	import { browser } from '$app/environment';
 	import ConfigModal from '$components/modals/ConfigModal.svelte';
 	import Button from '$components/common/Button.svelte';
+	import VehicleDetailsPanel from '$components/panels/VehicleDetailsPanel.svelte';
 
 	let vehicles = $state<Vehicle[]>([]);
 	let loading = $state(true);
@@ -52,6 +53,25 @@
 		}
 	};
 
+	// Handle quick action events from VehicleList
+	function handleQuickAction(event: CustomEvent) {
+		const { action } = event.detail;
+		activeTab = action;
+	}
+
+	// Handle quick actions from VehicleDetailsPanel
+	function handlePanelQuickAction(action: string) {
+		activeTab = action;
+	}
+
+	// Get selected vehicle data
+	$: selectedVehicle = vehicles.find(v => v.id === selectedVehicleId);
+
+	// Add event listener for quick actions
+	if (browser) {
+		window.addEventListener('quickAction', handleQuickAction);
+	}
+
 	fetchVehicles();
 </script>
 
@@ -77,8 +97,12 @@
 		<VehicleList {vehicles} {selectedVehicleId} {updateCallback} />
 	{/if}
 
-	{#if selectedVehicleId}
-		<div class="mt-12">
+	{#if selectedVehicleId && selectedVehicle}
+		<div class="mt-8">
+			<VehicleDetailsPanel vehicle={selectedVehicle} onQuickAction={handlePanelQuickAction} {updateCallback} />
+		</div>
+		
+		<div class="mt-8">
 			<div class="mb-4 border-b border-gray-200 dark:border-gray-700">
 				<TabHeader bind:activeTab />
 			</div>
