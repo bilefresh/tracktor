@@ -65,7 +65,7 @@
 	}
 
 	// Get selected vehicle data
-	$: selectedVehicle = vehicles.find(v => v.id === selectedVehicleId);
+	let selectedVehicle = $derived(vehicles.find(v => v.id === selectedVehicleId));
 
 	// Add event listener for quick actions
 	if (browser) {
