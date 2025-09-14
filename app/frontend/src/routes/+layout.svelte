@@ -86,9 +86,7 @@
 						iconStyles="text-gray-600 dark:text-gray-100 hover:text-sky-500"
 						icon={Settings}
 						onclick={() => {
-							configModelStore.show((status: boolean) => {
-								status && fetchVehicles();
-							});
+							goto('/settings');
 						}}
 						ariaLabel="Settings"
 					/>

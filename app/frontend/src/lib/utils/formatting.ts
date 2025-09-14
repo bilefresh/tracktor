@@ -9,7 +9,7 @@ export interface ConfigStore {
 
 const configs: ConfigStore = {
   dateFormat: 'dd/MM/yyyy',
-  currency: 'USD',
+  currency: 'NGN',
   unitOfMeasure: 'metric'
 };
 
@@ -32,21 +32,13 @@ const formatDate = (date: Date | string): string => {
 };
 
 const getCurrencySymbol = (): string => {
-  return (
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: configs.currency
-    })
-      .formatToParts(0)
-      .find((part) => part.type === 'currency')?.value || ''
-  );
+  // Always return Naira symbol for Nigerian context
+  return '₦';
 };
 
 const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: configs.currency
-  }).format(amount);
+  // Format as Naira with proper Nigerian number formatting
+  return `₦${amount.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
 const getDistanceUnit = (): string => {

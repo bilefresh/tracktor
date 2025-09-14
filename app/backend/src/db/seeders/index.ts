@@ -19,13 +19,18 @@ export const seedInitialConfig = async () => {
     },
     {
       key: "currency",
-      value: "USD",
+      value: "NGN",
       description: "Default currency for financial transactions",
     },
     {
       key: "unitOfMeasure",
       value: "metric",
       description: "Unit of measure for distance and volume",
+    },
+    {
+      key: "fuelCost",
+      value: "500.00",
+      description: "Default fuel cost per liter in Nigerian Naira",
     },
   ];
 
@@ -54,22 +59,26 @@ export const seedDemoData = async () => {
   }
 
   const vehicle1 = await Vehicle.create({
-    make: "Honda",
-    model: "Civic",
+    vehicleType: "car",
+    brand: "honda",
+    make: "civic",
+    model: "LX",
     year: 2022,
     licensePlate: "TS07JA1997",
     vin: "1HGFC1F7XNA000001",
-    color: "#000",
+    color: "Black",
     odometer: 15000,
   });
 
   const vehicle2 = await Vehicle.create({
-    make: "Toyota",
-    model: "Corolla",
+    vehicleType: "car",
+    brand: "toyota",
+    make: "corolla",
+    model: "LE",
     year: 2021,
     licensePlate: "AP28DX2000",
     vin: "1NXBU4EE4AZ000002",
-    color: "#FFF",
+    color: "White",
     odometer: 25000,
   });
 

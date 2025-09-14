@@ -62,9 +62,14 @@
 	<div class="mb-2 flex items-center justify-between">
 		<div class="flex items-center gap-2">
 			<Car class="h-7 w-7 text-blue-500 dark:text-blue-400" />
-			<span class="text-2xl font-bold text-gray-800 dark:text-gray-100"
-				>{vehicle.make} {vehicle.model}</span
-			>
+			<div>
+				<span class="text-2xl font-bold text-gray-800 dark:text-gray-100"
+					>{vehicle.brand || 'Unknown'} {vehicle.make || 'Unknown'}</span
+				>
+				<div class="text-sm text-gray-500 dark:text-gray-400">
+					{vehicle.model || 'N/A'} • {vehicle.vehicleType || 'Car'}
+				</div>
+			</div>
 		</div>
 		<span
 			class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white dark:bg-blue-500 dark:text-gray-100"
@@ -89,10 +94,9 @@
 			<Paintbrush class="h-5 w-5 text-gray-400 dark:text-gray-500" />
 			<span class="font-semibold">Color:</span>
 			{#if vehicle.color}
-				<span
-					class="m-1 h-4 w-8 rounded border-2 border-sky-500 p-2 dark:border-sky-800"
-					style={`background-color: ${vehicle.color}`}
-				></span>
+				<div class="flex items-center gap-2">
+					<span class="text-sm text-gray-900 dark:text-gray-100">{vehicle.color}</span>
+				</div>
 			{:else}
 				<span>-</span>
 			{/if}

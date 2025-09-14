@@ -4,10 +4,10 @@ import { VehicleError } from "@exceptions/VehicleError.js";
 import { Status } from "@exceptions/ServiceError.js";
 
 export const addVehicle = async (req: Request, res: Response) => {
-  const { make, model, year, licensePlate } = req.body;
-  if (!make || !model || !year || !licensePlate) {
-    new VehicleError(
-      "Make, Model, Year, and License Plate are required.",
+  const { vehicleType, brand, make, year, licensePlate } = req.body;
+  if (!vehicleType || !brand || !make || !year || !licensePlate) {
+    throw new VehicleError(
+      "Vehicle Type, Brand, Make, Year, and License Plate are required.",
       Status.BAD_REQUEST,
     );
   }
@@ -31,11 +31,11 @@ export const getVehicleById = async (req: Request, res: Response) => {
 
 export const updateVehicle = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { make, model, year, licensePlate } = req.body;
+  const { vehicleType, brand, make, year, licensePlate } = req.body;
 
-  if (!make || !model || !year || !licensePlate) {
+  if (!vehicleType || !brand || !make || !year || !licensePlate) {
     throw new VehicleError(
-      "Make, Model, Year, and License Plate are required.",
+      "Vehicle Type, Brand, Make, Year, and License Plate are required.",
       Status.BAD_REQUEST,
     );
   }

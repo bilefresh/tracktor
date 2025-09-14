@@ -10,10 +10,10 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [lucidePreprocess(), tailwindcss(), sveltekit()],
 		server: {
-			port: Number(env.CLIENT_PORT) || 5173,
+			port: Number(env.CLIENT_PORT) || 5175,
 			host: env.CLIENT_HOST || '0.0.0.0',
 			proxy: {
-				'/api': `http://localhost:3000`,
+				'/api': `http://localhost:3112`,
 			}
 		},
 		envDir: resolve(process.cwd(), '../../'),

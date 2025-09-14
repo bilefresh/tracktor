@@ -23,10 +23,7 @@
 	];
 
 	const currencyOptions = [
-		{ value: 'INR', label: 'INR (₹)' },
-		{ value: 'USD', label: 'USD ($)' },
-		{ value: 'EUR', label: 'EUR (€)' },
-		{ value: 'GBP', label: 'GBP (£)' }
+		{ value: 'NGN', label: 'NGN (₦)' }
 	];
 
 	const uomOptions = [

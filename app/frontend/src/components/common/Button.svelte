@@ -8,14 +8,16 @@
 		variant,
 		icon: Icon = undefined,
 		loading = false,
-		onclick = () => {}
+		onclick = () => {},
+		class: className = ''
 	}: {
 		text: string;
 		type: 'submit' | 'button';
-		variant: 'primary' | 'hero';
+		variant: 'primary' | 'hero' | 'secondary';
 		icon?: Component;
 		loading?: boolean;
 		onclick?: () => void;
+		class?: string;
 	} = $props();
 	const getVariantStyles = () => {
 		switch (variant) {
@@ -23,11 +25,13 @@
 				return `border-gray-200 bg-gray-200 text-gray-900 hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-800`;
 			case 'primary':
 				return `border-blue-700 bg-blue-700 text-gray-100 hover:bg-blue-800 dark:border-blue-800 dark:bg-blue-800 dark:text-gray-50 dark:hover:bg-blue-900`;
+			case 'secondary':
+				return `border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600`;
 		}
 	};
 </script>
 
-<div class="flex justify-center">
+<div class="flex justify-center {className}">
 	{#if !loading}
 		<button
 			{type}

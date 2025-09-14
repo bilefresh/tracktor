@@ -6,9 +6,13 @@
 		Fingerprint,
 		Paintbrush,
 		Gauge,
-		Building2
+		Building2,
+		Truck,
+		Bike,
+		User
 	} from '@lucide/svelte';
 	import FormField from '../common/FormField.svelte';
+	import SearchableDropdown from '../common/SearchableDropdown.svelte';
 	import type { NewVehicle } from '$lib/models/vehicle';
 	import { env } from '$env/dynamic/public';
 	import { vehiclesStore } from '$lib/stores/vehicle';
@@ -18,17 +22,61 @@
 	import type { Status } from '$lib/models/status';
 	import { handleApiError, type ApiError } from '$lib/models/Error';
 	import { cleanup } from '$lib/utils/formatting';
+	import { vehicleData, getMakesByVehicleType, getModelsByMake, type VehicleOption } from '$lib/data/vehicleData';
+	import { riderData, type RiderOption } from '$lib/data/riderData';
 
 	let { vehicleToEdit = null, editMode = false, modalVisibility = $bindable(), loading } = $props();
 
 	const vehicle: NewVehicle = $state({
+		vehicleType: null,
+		brand: null,
 		make: null,
 		model: null,
 		year: null,
 		licensePlate: null,
 		vin: null,
 		color: null,
-		odometer: null
+		odometer: null,
+		riderId: null
+	});
+
+	// Reactive state for dropdown options
+	let availableMakes = $state<VehicleOption[]>([]);
+	let availableModels = $state<VehicleOption[]>([]);
+	let availableYears = $state<VehicleOption[]>(vehicleData.years);
+	let availableColors = $state<VehicleOption[]>(vehicleData.colors);
+	let availableRiders = $state<RiderOption[]>(riderData);
+
+	// Vehicle type options
+	const vehicleTypeOptions: VehicleOption[] = [
+		{ value: 'car', label: 'Car' },
+		{ value: 'motorcycle', label: 'Motorcycle' },
+		{ value: 'truck', label: 'Truck' }
+	];
+
+	// Update available makes when vehicle type changes
+	$effect(() => {
+		if (vehicle.vehicleType) {
+			availableMakes = getMakesByVehicleType(vehicle.vehicleType);
+			// Reset brand and make when vehicle type changes
+			vehicle.brand = null;
+			vehicle.make = null;
+			vehicle.model = null;
+		} else {
+			availableMakes = [];
+		}
+	});
+
+	// Update available models when brand changes
+	$effect(() => {
+		if (vehicle.brand) {
+			availableModels = getModelsByMake(vehicle.brand);
+			// Reset make and model when brand changes
+			vehicle.make = null;
+			vehicle.model = null;
+		} else {
+			availableModels = [];
+		}
 	});
 
 	let status = $state<Status>({
@@ -43,7 +91,7 @@
 	});
 
 	async function persistVehicle() {
-		if (!vehicle.make || !vehicle.model || !vehicle.year || !vehicle.licensePlate) {
+		if (!vehicle.vehicleType || !vehicle.brand || !vehicle.make || !vehicle.year || !vehicle.licensePlate) {
 			status = {
 				message: 'Please fill in all required fields.',
 				type: 'ERROR'
@@ -76,13 +124,16 @@
 					type: 'SUCCESS'
 				};
 				Object.assign(vehicle, {
-					make: '',
-					model: '',
+					vehicleType: null,
+					brand: null,
+					make: null,
+					model: null,
 					year: null,
 					licensePlate: '',
 					vin: '',
-					color: '',
-					odometer: null
+					color: null,
+					odometer: null,
+					riderId: null
 				});
 				modalVisibility = false;
 				fetchVehicles(); // Refresh the vehicle list after closing the modal
@@ -115,17 +166,44 @@
 	}}
 	class="space-y-6"
 >
+	<!-- Vehicle Type -->
+	<SearchableDropdown
+		id="vehicleType"
+		options={vehicleTypeOptions}
+		bind:value={vehicle.vehicleType}
+		placeholder="Select Vehicle Type"
+		label="Vehicle Type"
+		required={true}
+		icon={Car}
+	/>
+
 	<div class="grid grid-flow-row grid-cols-2 gap-4">
-		<FormField
-			id="make"
-			type="text"
-			placeholder="Make"
-			bind:value={vehicle.make}
-			icon={Building2}
-			label="Manufacturer"
+		<!-- Brand -->
+		<SearchableDropdown
+			id="brand"
+			options={availableMakes}
+			bind:value={vehicle.brand}
+			placeholder="Select Brand"
+			label="Brand"
 			required={true}
-			ariaLabel="Vehicle Make"
+			icon={Building2}
+			disabled={!vehicle.vehicleType}
 		/>
+		<!-- Make -->
+		<SearchableDropdown
+			id="make"
+			options={availableModels}
+			bind:value={vehicle.make}
+			placeholder="Select Make"
+			label="Make"
+			required={true}
+			icon={Car}
+			disabled={!vehicle.brand}
+		/>
+	</div>
+
+	<div class="grid grid-flow-row grid-cols-2 gap-4">
+		<!-- Model -->
 		<FormField
 			id="model"
 			type="text"
@@ -133,29 +211,39 @@
 			bind:value={vehicle.model}
 			icon={Car}
 			label="Model"
-			required={true}
+			required={false}
 			ariaLabel="Vehicle Model"
 		/>
-	</div>
-	<div class="grid grid-flow-row grid-cols-2 gap-4">
-		<FormField
+		<!-- Year -->
+		<SearchableDropdown
 			id="year"
-			type="number"
-			placeholder="Year"
+			options={availableYears}
 			bind:value={vehicle.year}
-			icon={Calendar1}
+			placeholder="Select Year"
 			label="Year"
 			required={true}
-			ariaLabel="Vehicle Year"
+			icon={Calendar1}
 		/>
-		<FormField
+	</div>
+
+	<div class="grid grid-flow-row grid-cols-2 gap-4">
+		<!-- Color -->
+		<SearchableDropdown
 			id="color"
-			type="text"
-			placeholder="Color"
+			options={availableColors}
 			bind:value={vehicle.color}
-			icon={Paintbrush}
+			placeholder="Select Color"
 			label="Color"
-			ariaLabel="Color"
+			icon={Paintbrush}
+		/>
+		<!-- Rider -->
+		<SearchableDropdown
+			id="rider"
+			options={availableRiders}
+			bind:value={vehicle.riderId}
+			placeholder="Select Rider"
+			label="Assigned Rider"
+			icon={User}
 		/>
 	</div>
 

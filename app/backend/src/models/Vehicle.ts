@@ -6,13 +6,16 @@ import { Status } from "@exceptions/ServiceError.js";
 
 interface VehicleAttributes {
   id: string;
+  vehicleType: "car" | "motorcycle" | "truck";
+  brand?: string;
   make: string;
-  model: string;
+  model?: string;
   year: number;
   licensePlate: string;
   vin?: string;
   color?: string;
   odometer?: number;
+  riderId?: string;
 }
 
 interface VehicleCreationAttributes extends Optional<VehicleAttributes, "id"> {}
@@ -22,13 +25,16 @@ class Vehicle
   implements VehicleAttributes
 {
   declare public id: string;
+  declare public vehicleType: "car" | "motorcycle" | "truck";
+  declare public brand?: string;
   declare public make: string;
-  declare public model: string;
+  declare public model?: string;
   declare public year: number;
   declare public licensePlate: string;
   declare public vin?: string;
   declare public color?: string;
   declare public odometer?: number;
+  declare public riderId?: string;
 }
 
 Vehicle.init(
@@ -38,6 +44,15 @@ Vehicle.init(
       primaryKey: true,
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
+    },
+    vehicleType: {
+      type: DataTypes.ENUM("car", "motorcycle", "truck"),
+      allowNull: false,
+      defaultValue: "car",
+    },
+    brand: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     make: {
       type: DataTypes.STRING,
@@ -51,7 +66,7 @@ Vehicle.init(
     },
     model: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         len: {
           args: [3, 50],
@@ -78,12 +93,6 @@ Vehicle.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        is: {
-          args: "^[A-Z0-9- ]{2,25}$",
-          msg: "Licence Plate format is incorrect.",
-        },
-      },
     },
     vin: {
       type: DataTypes.STRING,
@@ -117,12 +126,6 @@ Vehicle.init(
     color: {
       type: DataTypes.STRING,
       allowNull: true,
-      validate: {
-        is: {
-          args: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
-          msg: "Only hex color codes are allowed.",
-        },
-      },
     },
     odometer: {
       type: DataTypes.INTEGER,
@@ -144,6 +147,10 @@ Vehicle.init(
           }
         },
       },
+    },
+    riderId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
